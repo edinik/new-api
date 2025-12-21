@@ -1188,6 +1188,13 @@ const EditChannelModal = (props) => {
       settings.aws_key_type = localInputs.aws_key_type || 'ak_sk';
     }
 
+    // type === 41 (Vertex): 始终保存 vertex_key_type 到 settings，避免编辑时被重置
+    if (localInputs.type === 41) {
+      settings.vertex_key_type = localInputs.vertex_key_type || 'json';
+    } else if ('vertex_key_type' in settings) {
+      delete settings.vertex_key_type;
+    }
+
     // type === 1 (OpenAI) 或 type === 14 (Claude): 设置字段透传控制（显式保存布尔值）
     if (localInputs.type === 1 || localInputs.type === 14) {
       settings.allow_service_tier = localInputs.allow_service_tier === true;
@@ -1597,7 +1604,7 @@ const EditChannelModal = (props) => {
         >
           {() => (
             <Spin spinning={loading}>
-              <div className='p-2' ref={formContainerRef}>
+              <div className='p-2 space-y-3' ref={formContainerRef}>
                 <div ref={(el) => (formSectionRefs.current.basicInfo = el)}>
                   <Card className='!rounded-2xl shadow-sm border-0 mb-6'>
                     {/* Header: Basic Info */}
